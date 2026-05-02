@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ambiente virtual
+venv/
+.env
+
+# Banco SQLite
+*.db
+
+# VSCode
+.vscode/
+
+# Logs
+*.log
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Angular
+frontend/task-ai-front/node_modules/
+frontend/task-ai-front/dist/
+frontend/task-ai-front/.angular/
+
+.idea/
