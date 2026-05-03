@@ -20,6 +20,12 @@ tasks: Task[] = [];
   priority = 'media';
   aiResult = '';
 
+  isLoadingTasks = false;
+  isCreating = false;
+  isGeneratingAI = false;
+  feedbackMessage = '';
+  errorMessage = '';
+
   constructor(private taskService: TaskService) {}
 
   ngOnInit(): void {
@@ -27,55 +33,91 @@ tasks: Task[] = [];
   }
 
   loadTasks(): void {
-    this.taskService.getTasks().subscribe((tasks) => {
-      this.tasks = tasks;
+    this.isLoadingTasks = true;
+
+    this.taskService.getTasks().subscribe({
+      next: (tasks) => {
+        this.tasks = tasks;
+        this.isLoadingTasks = false;
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao carregar tarefas.';
+        this.isLoadingTasks = false;
+      },
     });
   }
 
   createTask(): void {
     if (!this.title.trim()) {
-      alert('Informe o título da tarefa');
+      this.errorMessage = 'Informe o título da tarefa.';
       return;
     }
 
-    this.taskService.createTask({
-      title: this.title,
-      description: this.description,
-      priority: this.priority,
-      status: 'pendente',
-      completed: false,
-    }).subscribe(() => {
-      this.title = '';
-      this.description = '';
-      this.priority = 'media';
-      this.aiResult = '';
-      this.loadTasks();
-    });
+    this.isCreating = true;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+
+    this.taskService
+      .createTask({
+        title: this.title,
+        description: this.description,
+        priority: this.priority,
+        status: 'pendente',
+        completed: false,
+      })
+      .subscribe({
+        next: () => {
+          this.title = '';
+          this.description = '';
+          this.priority = 'media';
+          this.aiResult = '';
+          this.feedbackMessage = 'Tarefa criada com sucesso!';
+          this.isCreating = false;
+          this.loadTasks();
+        },
+        error: () => {
+          this.errorMessage = 'Erro ao criar tarefa.';
+          this.isCreating = false;
+        },
+      });
   }
 
   generateAI(): void {
     if (!this.title.trim()) {
-      alert('Digite um título para gerar com IA');
+      this.errorMessage = 'Digite um título para gerar com IA.';
       return;
     }
 
-    this.taskService.generateAI(this.title).subscribe((response) => {
-      this.description = response.description;
-      this.priority = response.priority;
-      this.aiResult = response.subtasks.join('\n');
+    this.isGeneratingAI = true;
+    this.feedbackMessage = '';
+    this.errorMessage = '';
+
+    this.taskService.generateAI(this.title).subscribe({
+      next: (response) => {
+        this.description = response.description;
+        this.priority = response.priority;
+        this.aiResult = response.subtasks.join('\n');
+        this.feedbackMessage = 'Sugestão gerada com IA!';
+        this.isGeneratingAI = false;
+      },
+      error: () => {
+        this.errorMessage = 'Erro ao gerar sugestão com IA.';
+        this.isGeneratingAI = false;
+      },
     });
   }
 
   completeTask(id: number): void {
     this.taskService.completeTask(id).subscribe(() => {
+      this.feedbackMessage = 'Tarefa concluída!';
       this.loadTasks();
     });
   }
 
   deleteTask(id: number): void {
     this.taskService.deleteTask(id).subscribe(() => {
+      this.feedbackMessage = 'Tarefa excluída!';
       this.loadTasks();
     });
   }
-
 }

@@ -1,5 +1,4 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white p-6">
-  
   <div class="max-w-7xl mx-auto">
 
     <!-- HEADER -->
@@ -14,17 +13,19 @@
 
       <!-- FORM -->
       <div class="lg:col-span-1 bg-white/5 backdrop-blur rounded-2xl p-6 border border-white/10 shadow-xl">
-        
+
         <h2 class="text-xl font-semibold mb-4">Nova tarefa</h2>
 
         <div class="space-y-4">
 
+          <!-- INPUT -->
           <input
             [(ngModel)]="title"
             placeholder="Título da tarefa"
             class="w-full p-3 rounded-xl bg-slate-900 border border-white/10 focus:ring-2 focus:ring-violet-500 outline-none"
           />
 
+          <!-- TEXTAREA -->
           <textarea
             [(ngModel)]="description"
             placeholder="Descrição"
@@ -32,6 +33,7 @@
             class="w-full p-3 rounded-xl bg-slate-900 border border-white/10 focus:ring-2 focus:ring-violet-500 outline-none"
           ></textarea>
 
+          <!-- PRIORIDADE -->
           <select
             [(ngModel)]="priority"
             class="w-full p-3 rounded-xl bg-slate-900 border border-white/10 focus:ring-2 focus:ring-violet-500 outline-none"
@@ -41,24 +43,39 @@
             <option value="alta">Alta</option>
           </select>
 
-          <!-- IA -->
+          <!-- BOTÃO IA -->
           <button
             (click)="generateAI()"
-            class="w-full bg-violet-600 hover:bg-violet-500 transition p-3 rounded-xl font-medium"
+            [disabled]="isGeneratingAI"
+            class="w-full bg-violet-600 hover:bg-violet-500 transition p-3 rounded-xl font-medium disabled:opacity-60"
           >
-            ✨ Gerar com IA
+            <span *ngIf="!isGeneratingAI">✨ Gerar com IA</span>
+            <span *ngIf="isGeneratingAI">Gerando...</span>
           </button>
 
+          <!-- BOTÃO CRIAR -->
           <button
             (click)="createTask()"
-            class="w-full bg-emerald-600 hover:bg-emerald-500 transition p-3 rounded-xl font-medium"
+            [disabled]="isCreating"
+            class="w-full bg-emerald-600 hover:bg-emerald-500 transition p-3 rounded-xl font-medium disabled:opacity-60"
           >
-            Criar tarefa
+            <span *ngIf="!isCreating">Criar tarefa</span>
+            <span *ngIf="isCreating">Criando...</span>
           </button>
 
-          <!-- Resultado IA -->
+          <!-- FEEDBACK -->
+          <div *ngIf="feedbackMessage" class="p-3 bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-sm text-emerald-300">
+            {{ feedbackMessage }}
+          </div>
+
+          <!-- ERRO -->
+          <div *ngIf="errorMessage" class="p-3 bg-red-500/10 border border-red-500/30 rounded-xl text-sm text-red-300">
+            {{ errorMessage }}
+          </div>
+
+          <!-- RESULTADO IA -->
           <div *ngIf="aiResult" class="mt-4 p-3 bg-slate-900 rounded-xl text-sm border border-white/10">
-            <p class="font-semibold mb-2">Sugestão de subtarefas:</p>
+            <p class="font-semibold mb-2">Subtarefas sugeridas:</p>
             <pre class="whitespace-pre-wrap text-slate-300">{{ aiResult }}</pre>
           </div>
 
@@ -68,6 +85,12 @@
       <!-- LISTA -->
       <div class="lg:col-span-2 space-y-4">
 
+        <!-- LOADING -->
+        <div *ngIf="isLoadingTasks" class="p-6 text-center text-slate-400 bg-white/5 border border-white/10 rounded-2xl">
+          Carregando tarefas...
+        </div>
+
+        <!-- TASKS -->
         <div
           *ngFor="let task of tasks"
           class="bg-white/5 border border-white/10 rounded-2xl p-5 shadow-lg hover:scale-[1.01] transition"
@@ -127,8 +150,8 @@
 
         </div>
 
-        <!-- EMPTY STATE -->
-        <div *ngIf="tasks.length === 0" class="text-center text-slate-500 mt-10">
+        <!-- EMPTY -->
+        <div *ngIf="!isLoadingTasks && tasks.length === 0" class="text-center text-slate-500 mt-10">
           Nenhuma tarefa criada ainda.
         </div>
 
