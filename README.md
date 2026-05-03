@@ -13,7 +13,7 @@ Aplicação fullstack com:
 
 
 ## 🎥 Demonstração
-![Demonstração projeto](./demo.gif)
+![Demonstração projeto](https://github.com/isahsantos/mvp-task-list-akacit/blob/main/demo.gif?raw=true)
 
 ---
 
