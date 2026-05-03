@@ -13,7 +13,8 @@ Aplicação fullstack com:
 
 
 ## 🎥 Demonstração
-![Demonstração projeto](ScreenRecorderProject25.gif)
+![Demonstração projeto](./demo.gif)
+
 ---
 
 
