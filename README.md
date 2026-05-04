@@ -17,6 +17,10 @@ Aplicação fullstack com:
 
 ---
 
+## 🧩🏗️ Arquitetura do Sistema
+![Diagrama Mermaid](<Task Management Ecosystem-2026-05-04-015705.png>)
+
+---
 
 ## 📌 Funcionalidades
 
